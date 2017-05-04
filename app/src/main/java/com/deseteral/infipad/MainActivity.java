@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,7 +28,7 @@ import com.google.android.gms.drive.query.SearchableField;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient googleApiClient;
     private DriveFolder driveAppFolder;
 
     private static final String TAG = "MAIN_ACTIVITY";
@@ -43,18 +42,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
-                lookForApplicationFolder();
-            }
-        });
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Drive.API)
                 .addScope(Drive.SCOPE_FILE)
                 .addConnectionCallbacks(this)
@@ -68,8 +56,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
         Drive.DriveApi
-                .getRootFolder(mGoogleApiClient)
-                .queryChildren(mGoogleApiClient, query)
+                .getRootFolder(googleApiClient)
+                .queryChildren(googleApiClient, query)
                 .setResultCallback(new ResultCallback<DriveApi.MetadataBufferResult>() {
                     @Override
                     public void onResult(@NonNull DriveApi.MetadataBufferResult result) {
@@ -92,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                     .build();
 
                             Drive.DriveApi
-                                    .getRootFolder(mGoogleApiClient)
-                                    .createFolder(mGoogleApiClient, changeSet)
+                                    .getRootFolder(googleApiClient)
+                                    .createFolder(googleApiClient, changeSet)
                                     .setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
                                         @Override
                                         public void onResult(@NonNull DriveFolder.DriveFolderResult driveFolderResult) {
@@ -106,11 +94,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 });
     }
 
+    public void onFabClick(View view) {
+        newFile();
+    }
+
+    private void newFile() {
+        Intent intent = new Intent(this, NoteActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        googleApiClient.connect();
     }
 
     @Override
@@ -134,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         switch (requestCode) {
             case RESOLVE_CONNECTION_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    mGoogleApiClient.connect();
+                    googleApiClient.connect();
                 }
                 break;
         }
