@@ -21,6 +21,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveApi;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.MetadataChangeSet;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .setResultCallback(new ResultCallback<DriveApi.MetadataBufferResult>() {
                     @Override
                     public void onResult(@NonNull DriveApi.MetadataBufferResult result) {
-                        boolean isFolderCreated = (result.getMetadataBuffer().getCount() > 0);
+                        MetadataBuffer bufferResult = result.getMetadataBuffer();
+                        boolean isFolderCreated = bufferResult.getCount() > 0;
 
                         if (isFolderCreated) {
                             driveAppFolder = result
@@ -91,9 +93,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
                             Drive.DriveApi
                                     .getRootFolder(mGoogleApiClient)
-                                    .createFolder(mGoogleApiClient, changeSet);
-
-                            Log.i(TAG, "GDrive app folder created");
+                                    .createFolder(mGoogleApiClient, changeSet)
+                                    .setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
+                                        @Override
+                                        public void onResult(@NonNull DriveFolder.DriveFolderResult driveFolderResult) {
+                                            Log.i(TAG, "GDrive app folder created");
+                                            lookForApplicationFolder();
+                                        }
+                                    });
                         }
                     }
                 });
@@ -155,13 +162,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         return super.onOptionsItemSelected(item);
     }
 
+    /*
+     * Google API connection callbacks
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        Log.i(TAG, "Connected to Google API services");
+        lookForApplicationFolder();
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-
-    }
+    public void onConnectionSuspended(int i) { }
 }
