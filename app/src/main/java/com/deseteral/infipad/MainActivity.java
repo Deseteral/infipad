@@ -1,17 +1,19 @@
 package com.deseteral.infipad;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -95,10 +97,33 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     public void onFabClick(View view) {
-        newFile();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.new_note_dialog_title)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        final AlertDialog dialog = (AlertDialog) dialogInterface;
+                        final EditText nameField = (EditText) dialog.findViewById(R.id.dialog_new_note_name_field);
+                        final String name = nameField.getText().toString().trim();
+
+                        newFile(name);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setView(getLayoutInflater().inflate(R.layout.dialog_new_note, null));
+
+        builder.create().show();
     }
 
-    private void newFile() {
+    private void newFile(String noteName) {
+        Log.i(TAG, "Create new note with title: " + noteName);
+
         Intent intent = new Intent(this, NoteActivity.class);
         startActivity(intent);
     }
