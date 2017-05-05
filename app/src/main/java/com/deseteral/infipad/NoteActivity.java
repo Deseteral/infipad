@@ -1,5 +1,6 @@
 package com.deseteral.infipad;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFragmentInteractionListener, NoteViewer.OnFragmentInteractionListener {
+
+    public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
+    public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -32,11 +36,17 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final Intent intent = getIntent();
+        final String noteTitle = intent.getStringExtra(NOTE_TITLE);
+        final String noteContent = intent.getStringExtra(NOTE_CONTENT);
+
         setContentView(R.layout.activity_note);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(noteTitle);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
