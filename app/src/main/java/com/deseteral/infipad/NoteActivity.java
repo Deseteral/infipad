@@ -16,26 +16,11 @@ import android.view.MenuItem;
 
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
 
-    public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
-    public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private SectionsPagerAdapter sectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager viewPager;
-
     private String initialNoteContent;
 
+    public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
+    public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
     private static final String TAG = "NOTE_ACTIVITY";
 
     @Override
@@ -58,7 +43,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        viewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(sectionsPagerAdapter);
     }
 
