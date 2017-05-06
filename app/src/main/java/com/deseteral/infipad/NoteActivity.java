@@ -79,7 +79,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                noteViewer = NoteViewer.newInstance();
+                noteViewer = NoteViewer.newInstance(initialNoteContent);
                 return noteViewer;
             } else if (position == 1) {
                 noteEditor = NoteEditor.newInstance(initialNoteContent);

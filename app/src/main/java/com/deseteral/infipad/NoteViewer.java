@@ -10,10 +10,13 @@ import us.feras.mdv.MarkdownView;
 
 public class NoteViewer extends Fragment {
     private MarkdownView markNoteContent;
+    private final String initialContent;
 
     private static final String TAG = "NOTE_VIEWER_FRAGMENT";
 
-    public NoteViewer() { }
+    public NoteViewer(String initialContent) {
+        this.initialContent = initialContent;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,7 @@ public class NoteViewer extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note_viewer, container, false);
 
         markNoteContent = (MarkdownView) view.findViewById(R.id.mark_note_content);
+        markNoteContent.loadMarkdown(initialContent);
         return view;
     }
 
@@ -33,7 +37,7 @@ public class NoteViewer extends Fragment {
         markNoteContent.loadMarkdown(markdown);
     }
 
-    public static NoteViewer newInstance() {
-        return new NoteViewer();
+    public static NoteViewer newInstance(String initialContent) {
+        return new NoteViewer(initialContent);
     }
 }
