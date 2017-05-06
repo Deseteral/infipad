@@ -11,13 +11,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalStorage implements Storage {
+class LocalStorage implements Storage {
     private final Context context;
     private final File appFolder;
 
     private final String TAG = "LOCAL_STORAGE";
 
-    public LocalStorage(Context context) {
+    LocalStorage(Context context) {
         this.context = context;
         this.appFolder = context.getFilesDir();
 
@@ -26,7 +26,7 @@ public class LocalStorage implements Storage {
 
     @Override
     public void saveNote(String name, String content) {
-        final String filename = String.format("%s.md", name);
+        final String filename = getFileForName(name).getName();
 
         try {
             final FileOutputStream os = context.openFileOutput(filename, Context.MODE_PRIVATE);
@@ -40,8 +40,7 @@ public class LocalStorage implements Storage {
 
     @Override
     public String loadNoteContent(String name) {
-        final String filename = String.format("%s.md", name);
-        final File file = new File(appFolder, filename);
+        final File file = getFileForName(name);
         final StringBuilder text = new StringBuilder();
 
         try {
@@ -75,9 +74,13 @@ public class LocalStorage implements Storage {
 
     @Override
     public void deleteNote(String name) {
+        getFileForName(name).delete();
+    }
+
+    private File getFileForName(String name) {
         final String filename = String.format("%s.md", name);
         final File file = new File(appFolder, filename);
 
-        file.delete();
+        return file;
     }
 }
