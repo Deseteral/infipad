@@ -1,16 +1,13 @@
 package com.deseteral.infipad;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -38,11 +35,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noteTitle);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(sectionsPagerAdapter);
     }
@@ -50,17 +43,13 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // TODO: this might be unnecessary, I might want to replace it with menu_main.
+        // TODO: this could be unnecessary, I might want to replace it with menu_main.
         getMenuInflater().inflate(R.menu.menu_note, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -76,14 +65,10 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         sectionsPagerAdapter.noteViewer.updateContentView(newContent);
     }
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public NoteViewer noteViewer;
-        public NoteEditor noteEditor;
+        NoteViewer noteViewer;
+        NoteEditor noteEditor;
 
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

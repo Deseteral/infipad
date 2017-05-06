@@ -1,7 +1,6 @@
 package com.deseteral.infipad;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -11,14 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnEditorContentChangedListener} interface
- * to handle interaction events.
- * Use the {@link NoteEditor#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NoteEditor extends Fragment {
     private OnEditorContentChangedListener mListener;
     private String initialNoteContent = "";
@@ -85,17 +76,7 @@ public class NoteEditor extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnEditorContentChangedListener {
+    interface OnEditorContentChangedListener {
         void onEditorContentChanged(String newContent);
     }
 }
