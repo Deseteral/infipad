@@ -44,9 +44,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        storage = new StorageOrchestrator(
-                new LocalStorage(this)
-        );
+        storage = new StorageOrchestrator(this);
     }
 
     @Override

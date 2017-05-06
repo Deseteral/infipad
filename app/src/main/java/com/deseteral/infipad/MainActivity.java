@@ -62,9 +62,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        storage = new StorageOrchestrator(
-                new LocalStorage(this)
-        );
+        storage = new StorageOrchestrator(this);
 
         fileList = storage.getList();
 

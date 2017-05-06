@@ -1,5 +1,6 @@
 package com.deseteral.infipad.storage;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.List;
@@ -9,8 +10,8 @@ public class StorageOrchestrator implements Storage {
 
     private static final String TAG = "STORAGE_ORCH";
 
-    public StorageOrchestrator(LocalStorage localStorage) {
-        this.localStorage = localStorage;
+    public StorageOrchestrator(Context context) {
+        this.localStorage = new LocalStorage(context);
         Log.i(TAG, "Created storage orchestrator");
     }
 
