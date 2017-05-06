@@ -38,13 +38,13 @@ public class LocalStorage implements Storage {
 
     @Override
     public List<String> getList() {
-        ArrayList<String> tempList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
 
-        tempList.add("This is note");
-        tempList.add("Another note");
-        tempList.add("My note");
-        tempList.add("Some note");
+        for(File f : appFolder.listFiles()) {
+            final String filename = f.getName();
+            list.add(filename.substring(0, filename.length() - 3));
+        }
 
-        return tempList;
+        return list;
     }
 }
