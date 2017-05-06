@@ -10,10 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFragmentInteractionListener, NoteViewer.OnFragmentInteractionListener {
+public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
 
     public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
     public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
@@ -34,6 +35,8 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
     private ViewPager viewPager;
 
     private String initialNoteContent;
+
+    private static final String TAG = "NOTE_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +87,11 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onEditorContentChanged(String newContent) {
+        final String html = "<h1>" + newContent + "</h1>";
+        final NoteViewer noteViewer = (NoteViewer) sectionsPagerAdapter.getItem(0);
 
+        noteViewer.updateContentView(html);
     }
 
     /**
