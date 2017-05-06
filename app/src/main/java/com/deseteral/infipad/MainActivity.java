@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient googleApiClient;
     private DriveFolder driveAppFolder;
 
+    private ListView listView;
     private StorageOrchestrator storage;
-    private List<String> fileList;
 
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
@@ -63,11 +63,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         storage = new StorageOrchestrator(this);
 
-        fileList = storage.getList();
-
-        ListView list = (ListView) findViewById(R.id.note_list);
-        list.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, fileList));
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView = (ListView) findViewById(R.id.note_list);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final TextView textView = (TextView) view;
@@ -77,6 +74,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 startNoteActivity(noteName, noteContent);
             }
         });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final TextView textView = (TextView) view;
+                final String noteName = textView.getText().toString();
+                final AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
+
+                builder.setTitle(R.string.remove_note_dialog_title)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                storage.deleteNote(noteName);
+                                refreshListView();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                builder.create().show();
+
+                return true;
+            }
+        });
+        refreshListView();
+    }
+
+    private void refreshListView() {
+        List<String> fileList = storage.getList();
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, fileList));
     }
 
     private void lookForApplicationFolder() {

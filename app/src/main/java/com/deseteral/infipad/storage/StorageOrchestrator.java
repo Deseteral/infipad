@@ -29,4 +29,9 @@ public class StorageOrchestrator implements Storage {
     public List<String> getList() {
         return localStorage.getList();
     }
+
+    @Override
+    public void deleteNote(String name) {
+        localStorage.deleteNote(name);
+    }
 }

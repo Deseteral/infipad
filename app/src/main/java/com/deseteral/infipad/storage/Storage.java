@@ -6,4 +6,5 @@ public interface Storage {
     void saveNote(String name, String content);
     String loadNoteContent(String name);
     List<String> getList();
+    void deleteNote(String name);
 }

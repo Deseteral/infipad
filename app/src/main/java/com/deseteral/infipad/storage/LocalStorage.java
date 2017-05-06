@@ -72,4 +72,12 @@ public class LocalStorage implements Storage {
 
         return list;
     }
+
+    @Override
+    public void deleteNote(String name) {
+        final String filename = String.format("%s.md", name);
+        final File file = new File(appFolder, filename);
+
+        file.delete();
+    }
 }
