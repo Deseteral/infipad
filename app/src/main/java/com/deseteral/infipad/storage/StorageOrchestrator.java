@@ -20,6 +20,11 @@ public class StorageOrchestrator implements Storage {
     }
 
     @Override
+    public String loadNoteContent(String name) {
+        return localStorage.loadNoteContent(name);
+    }
+
+    @Override
     public List<String> getList() {
         return localStorage.getList();
     }

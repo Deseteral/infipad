@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.deseteral.infipad.storage.LocalStorage;
 import com.deseteral.infipad.storage.StorageOrchestrator;
@@ -32,12 +34,15 @@ import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient googleApiClient;
     private DriveFolder driveAppFolder;
 
     private StorageOrchestrator storage;
+    private List<String> fileList;
 
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
@@ -61,8 +66,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 new LocalStorage(this)
         );
 
+        fileList = storage.getList();
+
         ListView list = (ListView) findViewById(R.id.note_list);
-        list.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, storage.getList()));
+        list.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, fileList));
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final TextView textView = (TextView) view;
+                final String noteName = textView.getText().toString();
+
+                startNoteActivity(noteName, storage.loadNoteContent(noteName));
+            }
+        });
     }
 
     private void lookForApplicationFolder() {

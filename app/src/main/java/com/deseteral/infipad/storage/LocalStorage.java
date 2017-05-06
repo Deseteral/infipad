@@ -3,8 +3,10 @@ package com.deseteral.infipad.storage;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,29 @@ public class LocalStorage implements Storage {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public String loadNoteContent(String name) {
+        final String filename = String.format("%s.md", name);
+        final File file = new File(appFolder, filename);
+        final StringBuilder text = new StringBuilder();
+
+        try {
+            final BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return text.toString();
     }
 
     @Override
