@@ -11,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.deseteral.infipad.storage.LocalStorage;
 import com.deseteral.infipad.storage.StorageOrchestrator;
 
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
