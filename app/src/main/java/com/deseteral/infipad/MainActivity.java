@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.deseteral.infipad.storage.LocalStorage;
+import com.deseteral.infipad.storage.StorageOrchestrator;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient googleApiClient;
     private DriveFolder driveAppFolder;
 
+    private StorageOrchestrator storage;
+
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
     private static final String DRIVE_APP_FOLDER_TITLE = "infipad app";
@@ -50,6 +54,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+
+        storage = new StorageOrchestrator(
+                new LocalStorage(this)
+        );
     }
 
     private void lookForApplicationFolder() {

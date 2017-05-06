@@ -11,10 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.deseteral.infipad.storage.StorageOrchestrator;
+
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
 
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String initialNoteContent;
+    private StorageOrchestrator storage;
 
     public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
     public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
@@ -40,6 +43,10 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         viewPager.setAdapter(sectionsPagerAdapter);
     }
 
+    @Override
+    public void onEditorContentChanged(String newContent) {
+        sectionsPagerAdapter.noteViewer.updateContentView(newContent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,11 +65,6 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onEditorContentChanged(String newContent) {
-        sectionsPagerAdapter.noteViewer.updateContentView(newContent);
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
