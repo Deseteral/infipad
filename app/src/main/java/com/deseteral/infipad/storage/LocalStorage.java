@@ -52,8 +52,7 @@ class LocalStorage implements Storage {
                 text.append('\n');
             }
             br.close();
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 
@@ -64,7 +63,7 @@ class LocalStorage implements Storage {
     public List<String> getList() {
         List<String> list = new ArrayList<>();
 
-        for(File f : appFolder.listFiles()) {
+        for (File f : appFolder.listFiles()) {
             final String filename = f.getName();
             list.add(filename.substring(0, filename.length() - 3));
         }
