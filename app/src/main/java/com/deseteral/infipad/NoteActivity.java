@@ -11,15 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.deseteral.infipad.storage.LocalStorage;
 import com.deseteral.infipad.storage.StorageOrchestrator;
 
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
 
+    private String noteName;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String initialNoteContent;
     private StorageOrchestrator storage;
 
-    public static final String NOTE_TITLE = "com.deseteral.infipad.NOTE_TITLE";
+    public static final String NOTE_NAME = "com.deseteral.infipad.NOTE_NAME";
     public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
     private static final String TAG = "NOTE_ACTIVITY";
 
@@ -28,7 +30,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         super.onCreate(savedInstanceState);
 
         final Intent intent = getIntent();
-        final String noteTitle = intent.getStringExtra(NOTE_TITLE);
+        noteName = intent.getStringExtra(NOTE_NAME);
         initialNoteContent = intent.getStringExtra(NOTE_CONTENT);
 
         setContentView(R.layout.activity_note);
@@ -36,16 +38,21 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(noteTitle);
+        getSupportActionBar().setTitle(noteName);
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(sectionsPagerAdapter);
+
+        storage = new StorageOrchestrator(
+                new LocalStorage(this)
+        );
     }
 
     @Override
     public void onEditorContentChanged(String newContent) {
         sectionsPagerAdapter.noteViewer.updateContentView(newContent);
+        storage.saveNote(noteName, newContent);
     }
 
     @Override
