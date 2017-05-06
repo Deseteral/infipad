@@ -2,16 +2,16 @@ package com.deseteral.infipad;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import us.feras.mdv.MarkdownView;
 
 public class NoteViewer extends Fragment {
     private View view;
-    private WebView webNoteContent;
+    private MarkdownView markNoteContent;
 
     private static final String TAG = "NOTE_VIEWER_FRAGMENT";
 
@@ -40,11 +40,11 @@ public class NoteViewer extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_note_viewer, container, false);
 
-        webNoteContent = (WebView) view.findViewById(R.id.web_note_content);
+        markNoteContent = (MarkdownView) view.findViewById(R.id.mark_note_content);
         return view;
     }
 
-    public void updateContentView(String html) {
-        webNoteContent.loadData(html, "text/html", null);
+    public void updateContentView(String markdown) {
+        markNoteContent.loadMarkdown(markdown);
     }
 }

@@ -88,15 +88,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
 
     @Override
     public void onEditorContentChanged(String newContent) {
-        final String headHtml = "<style></style>";
-        final String contentHtml = "<h1>" + newContent + "</h1>";
-        final String html = String.format(
-                "<html><head>%s</head><body>%s</body></html>",
-                headHtml,
-                contentHtml
-        );
-
-        sectionsPagerAdapter.noteViewer.updateContentView(html);
+        sectionsPagerAdapter.noteViewer.updateContentView(newContent);
     }
 
     /**
