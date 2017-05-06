@@ -79,8 +79,6 @@ class LocalStorage implements Storage {
 
     private File getFileForName(String name) {
         final String filename = String.format("%s.md", name);
-        final File file = new File(appFolder, filename);
-
-        return file;
+        return new File(appFolder, filename);
     }
 }
