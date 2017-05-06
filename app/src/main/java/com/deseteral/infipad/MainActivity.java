@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.deseteral.infipad.storage.LocalStorage;
 import com.deseteral.infipad.storage.StorageOrchestrator;
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         storage = new StorageOrchestrator(
                 new LocalStorage(this)
         );
+
+        ListView list = (ListView) findViewById(R.id.note_list);
+        list.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, storage.getList()));
     }
 
     private void lookForApplicationFolder() {

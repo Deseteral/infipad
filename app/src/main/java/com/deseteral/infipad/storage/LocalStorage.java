@@ -6,6 +6,8 @@ import android.util.Log;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LocalStorage implements Storage {
     private final Context context;
@@ -32,5 +34,17 @@ public class LocalStorage implements Storage {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    @Override
+    public List<String> getList() {
+        ArrayList<String> tempList = new ArrayList<>();
+
+        tempList.add("This is note");
+        tempList.add("Another note");
+        tempList.add("My note");
+        tempList.add("Some note");
+
+        return tempList;
     }
 }
