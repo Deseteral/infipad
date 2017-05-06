@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,32 +19,36 @@ import android.view.ViewGroup;
  */
 public class NoteEditor extends Fragment {
     private OnFragmentInteractionListener mListener;
+    private String initialNoteContent = "";
 
     public NoteEditor() { }
 
-    public static NoteEditor newInstance() {
+    public static NoteEditor newInstance(String noteContent) {
         NoteEditor fragment = new NoteEditor();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
+        Bundle args = new Bundle();
+        args.putString(NoteActivity.NOTE_CONTENT, noteContent);
+        fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+
+        if (getArguments() != null) {
+            initialNoteContent = getArguments().getString(NoteActivity.NOTE_CONTENT);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_note_editor, container, false);
+        final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
+
+        EditText textNoteContent = (EditText) view.findViewById(R.id.text_note_content);
+        textNoteContent.setText(initialNoteContent);
+
+        return view;
     }
 
     @Override

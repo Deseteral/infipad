@@ -33,13 +33,15 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
      */
     private ViewPager viewPager;
 
+    private String initialNoteContent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final Intent intent = getIntent();
         final String noteTitle = intent.getStringExtra(NOTE_TITLE);
-        final String noteContent = intent.getStringExtra(NOTE_CONTENT);
+        initialNoteContent = intent.getStringExtra(NOTE_CONTENT);
 
         setContentView(R.layout.activity_note);
 
@@ -47,6 +49,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(noteTitle);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -100,7 +103,7 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnFrag
             if (position == 0) {
                 return NoteViewer.newInstance();
             } else if (position == 1) {
-                return NoteEditor.newInstance();
+                return NoteEditor.newInstance(initialNoteContent);
             }
             return null;
         }

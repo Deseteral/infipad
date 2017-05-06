@@ -5,9 +5,13 @@
     tools:context="com.deseteral.infipad.NoteEditor">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <EditText
+        android:id="@+id/text_note_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="note editor fragment" />
-
+        android:ems="10"
+        android:gravity="top|left"
+        android:inputType="textMultiLine"
+        android:singleLine="false" />
 </FrameLayout>

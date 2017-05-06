@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void newFile(String noteName) {
         Log.i(TAG, "Create new note with title: " + noteName);
-        startNoteActivity(noteName, "");
+        startNoteActivity(noteName, "# This is a new note");
     }
 
     private void startNoteActivity(String noteName, String noteContent) {
