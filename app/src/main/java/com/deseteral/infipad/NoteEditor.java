@@ -96,7 +96,6 @@ public class NoteEditor extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnEditorContentChangedListener {
-        // TODO: Update argument type and name
         void onEditorContentChanged(String newContent);
     }
 }

@@ -6,8 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 public class NoteViewer extends Fragment {
+    private View view;
+    private WebView webNoteContent;
+
     private static final String TAG = "NOTE_VIEWER_FRAGMENT";
 
     public NoteViewer() { }
@@ -33,11 +38,13 @@ public class NoteViewer extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_note_viewer, container, false);
+        view = inflater.inflate(R.layout.fragment_note_viewer, container, false);
+
+        webNoteContent = (WebView) view.findViewById(R.id.web_note_content);
+        return view;
     }
 
     public void updateContentView(String html) {
-        Log.i(TAG, "html: " + html);
+        webNoteContent.loadData(html, "text/html", null);
     }
 }

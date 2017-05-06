@@ -88,10 +88,15 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
 
     @Override
     public void onEditorContentChanged(String newContent) {
-        final String html = "<h1>" + newContent + "</h1>";
-        final NoteViewer noteViewer = (NoteViewer) sectionsPagerAdapter.getItem(0);
+        final String headHtml = "<style></style>";
+        final String contentHtml = "<h1>" + newContent + "</h1>";
+        final String html = String.format(
+                "<html><head>%s</head><body>%s</body></html>",
+                headHtml,
+                contentHtml
+        );
 
-        noteViewer.updateContentView(html);
+        sectionsPagerAdapter.noteViewer.updateContentView(html);
     }
 
     /**
@@ -100,6 +105,9 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
      */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        public NoteViewer noteViewer;
+        public NoteEditor noteEditor;
+
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -107,9 +115,11 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return NoteViewer.newInstance();
+                noteViewer = NoteViewer.newInstance();
+                return noteViewer;
             } else if (position == 1) {
-                return NoteEditor.newInstance(initialNoteContent);
+                noteEditor = NoteEditor.newInstance(initialNoteContent);
+                return noteEditor;
             }
             return null;
         }
