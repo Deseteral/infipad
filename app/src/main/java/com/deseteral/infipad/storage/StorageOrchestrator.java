@@ -1,6 +1,7 @@
 package com.deseteral.infipad.storage;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.List;
@@ -13,6 +14,17 @@ public class StorageOrchestrator implements Storage {
     public StorageOrchestrator(Context context) {
         this.localStorage = new LocalStorage(context);
         Log.i(TAG, "Created storage orchestrator");
+    }
+
+    public void synchronize(final OnSynchronizeFinishedCallback callback) {
+        Log.i(TAG, "Synchronizing remote and local storage");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                callback.onSynchronizeFinished();
+            }
+        }, 2000);
     }
 
     @Override
@@ -33,5 +45,9 @@ public class StorageOrchestrator implements Storage {
     @Override
     public void deleteNote(String name) {
         localStorage.deleteNote(name);
+    }
+
+    public interface OnSynchronizeFinishedCallback {
+        void onSynchronizeFinished();
     }
 }

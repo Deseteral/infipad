@@ -61,11 +61,14 @@ class LocalStorage implements Storage {
 
     @Override
     public List<String> getList() {
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
 
         for (File f : appFolder.listFiles()) {
             final String filename = f.getName();
-            list.add(filename.substring(0, filename.length() - 3));
+            final String extension = filename.substring(filename.length() - 3);
+            if (extension.equals(".md")) {
+                list.add(filename.substring(0, filename.length() - 3));
+            }
         }
 
         return list;

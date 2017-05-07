@@ -6,6 +6,7 @@ import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -35,7 +36,9 @@ import com.google.android.gms.drive.query.SearchableField;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleApiClient googleApiClient;
     private DriveFolder driveAppFolder;
@@ -62,6 +65,20 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .build();
 
         storage = new StorageOrchestrator(this);
+
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.layout_swipe);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                storage.synchronize(new StorageOrchestrator.OnSynchronizeFinishedCallback() {
+                    @Override
+                    public void onSynchronizeFinished() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        });
 
         listView = (ListView) findViewById(R.id.note_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
