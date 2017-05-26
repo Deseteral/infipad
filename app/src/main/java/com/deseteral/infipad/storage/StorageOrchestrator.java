@@ -4,45 +4,33 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.DriveFolder;
-
 import java.util.List;
 
 public class StorageOrchestrator implements Storage {
     private final LocalStorage localStorage;
-    private final DriveStorage driveStorage;
 
     private static final String TAG = "STORAGE_ORCH";
 
-    public StorageOrchestrator(Context context, GoogleApiClient googleApiClient, DriveFolder rootFolder) {
+    public StorageOrchestrator(Context context) {
         this.localStorage = new LocalStorage(context);
-        this.driveStorage = new DriveStorage(googleApiClient, rootFolder);
         Log.i(TAG, "Created storage orchestrator");
     }
 
     public void synchronize(final OnSynchronizeFinishedCallback callback) {
         Log.i(TAG, "Synchronizing remote and local storage");
 
-        driveStorage.getList(new OnListFetchedCallback() {
-            @Override
-            public void onListFetched(List<String> list) {
-                Log.i(TAG, "" + list.size());
-            }
-        });
-
+        // give some time for animation to end
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 callback.onSynchronizeFinished();
             }
-        }, 2000);
+        }, 1500);
     }
 
     @Override
     public void saveNote(String name, String content) {
         localStorage.saveNote(name, content);
-        driveStorage.saveNote(name, content);
     }
 
     @Override

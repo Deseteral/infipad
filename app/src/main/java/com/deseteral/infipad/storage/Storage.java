@@ -8,7 +8,7 @@ public interface Storage {
     void getList(OnListFetchedCallback callback);
     void deleteNote(String name);
 
-    public interface OnListFetchedCallback {
+    interface OnListFetchedCallback {
         void onListFetched(List<String> list);
     }
 }
