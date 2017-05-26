@@ -18,7 +18,6 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
     private String noteName;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private String initialNoteContent;
-    private StorageOrchestrator storage;
 
     public static final String NOTE_NAME = "com.deseteral.infipad.NOTE_NAME";
     public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
@@ -42,14 +41,12 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(sectionsPagerAdapter);
-
-        storage = new StorageOrchestrator(this);
     }
 
     @Override
     public void onEditorContentChanged(String newContent) {
         sectionsPagerAdapter.noteViewer.updateContentView(newContent);
-        storage.saveNote(noteName, newContent);
+        StorageOrchestrator.getInstance().saveNote(noteName, newContent);
     }
 
     @Override

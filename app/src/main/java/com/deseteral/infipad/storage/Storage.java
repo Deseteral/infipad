@@ -2,9 +2,13 @@ package com.deseteral.infipad.storage;
 
 import java.util.List;
 
-interface Storage {
+public interface Storage {
     void saveNote(String name, String content);
     String loadNoteContent(String name);
-    List<String> getList();
+    void getList(OnListFetchedCallback callback);
     void deleteNote(String name);
+
+    public interface OnListFetchedCallback {
+        void onListFetched(List<String> list);
+    }
 }

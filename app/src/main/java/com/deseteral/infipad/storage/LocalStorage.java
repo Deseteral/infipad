@@ -60,7 +60,7 @@ class LocalStorage implements Storage {
     }
 
     @Override
-    public List<String> getList() {
+    public void getList(OnListFetchedCallback callback) {
         final List<String> list = new ArrayList<>();
 
         for (File f : appFolder.listFiles()) {
@@ -71,7 +71,7 @@ class LocalStorage implements Storage {
             }
         }
 
-        return list;
+        callback.onListFetched(list);
     }
 
     @Override

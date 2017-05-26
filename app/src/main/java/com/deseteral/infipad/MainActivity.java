@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.deseteral.infipad.storage.Storage;
 import com.deseteral.infipad.storage.StorageOrchestrator;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements
     private DriveFolder driveAppFolder;
 
     private ListView listView;
-    private StorageOrchestrator storage;
 
     private static final String TAG = "MAIN_ACTIVITY";
     private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
@@ -64,14 +64,16 @@ public class MainActivity extends AppCompatActivity implements
                 .addOnConnectionFailedListener(this)
                 .build();
 
-        storage = new StorageOrchestrator(this);
+        StorageOrchestrator.setInstance(
+                new StorageOrchestrator(this, googleApiClient, driveAppFolder)
+        );
 
         final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.layout_swipe);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                storage.synchronize(new StorageOrchestrator.OnSynchronizeFinishedCallback() {
+                StorageOrchestrator.getInstance().synchronize(new StorageOrchestrator.OnSynchronizeFinishedCallback() {
                     @Override
                     public void onSynchronizeFinished() {
                         swipeRefreshLayout.setRefreshing(false);
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final TextView textView = (TextView) view;
                 final String noteName = textView.getText().toString();
-                final String noteContent = storage.loadNoteContent(noteName);
+                final String noteContent = StorageOrchestrator.getInstance().loadNoteContent(noteName);
 
                 startNoteActivity(noteName, noteContent);
             }
@@ -102,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements
                         .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int which) {
-                                storage.deleteNote(noteName);
+                                StorageOrchestrator.getInstance().deleteNote(noteName);
                                 refreshListView();
                             }
                         })
@@ -122,11 +124,18 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void refreshListView() {
-        List<String> fileList = storage.getList();
-        listView.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, fileList));
+        final MainActivity mainActivity = this;
+
+        StorageOrchestrator.getInstance().getList(new Storage.OnListFetchedCallback() {
+            @Override
+            public void onListFetched(List<String> list) {
+                listView.setAdapter(new ArrayAdapter<>(mainActivity, R.layout.element_note, list));
+            }
+        });
     }
 
     private void lookForApplicationFolder() {
+        final MainActivity mainActivity = this;
         Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, DRIVE_APP_FOLDER_TITLE))
                 .build();
@@ -146,6 +155,10 @@ public class MainActivity extends AppCompatActivity implements
                                     .get(0)
                                     .getDriveId()
                                     .asDriveFolder();
+
+                            StorageOrchestrator.setInstance(
+                                    new StorageOrchestrator(mainActivity, googleApiClient, driveAppFolder)
+                            );
 
                             Log.i(TAG, "GDrive app folder found");
                         } else {
@@ -200,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements
 
         final String initialNoteContent = "# This is a new note";
 
-        storage.saveNote(noteName, initialNoteContent);
+        StorageOrchestrator.getInstance().saveNote(noteName, initialNoteContent);
         startNoteActivity(noteName, initialNoteContent);
     }
 
