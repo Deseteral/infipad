@@ -16,8 +16,6 @@ public class NoteEditor extends Fragment {
 
     private static final String TAG = "NOTE_EDITOR_FRAGMENT";
 
-    public NoteEditor() { }
-
     public static NoteEditor newInstance(String noteContent) {
         NoteEditor fragment = new NoteEditor();
         Bundle args = new Bundle();

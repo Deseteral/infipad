@@ -11,15 +11,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.deseteral.infipad.storage.StorageOrchestrator;
+import com.deseteral.infipad.domain.Note;
+import com.deseteral.infipad.service.ApplicationState;
 
 public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEditorContentChangedListener {
 
-    private String noteName;
+    private Note note;
     private SectionsPagerAdapter sectionsPagerAdapter;
-    private String initialNoteContent;
 
-    public static final String NOTE_NAME = "com.deseteral.infipad.NOTE_NAME";
+    public static final String NOTE_ID = "com.deseteral.infipad.NOTE_ID";
     public static final String NOTE_CONTENT = "com.deseteral.infipad.NOTE_CONTENT";
     private static final String TAG = "NOTE_ACTIVITY";
 
@@ -28,15 +28,19 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         super.onCreate(savedInstanceState);
 
         final Intent intent = getIntent();
-        noteName = intent.getStringExtra(NOTE_NAME);
-        initialNoteContent = intent.getStringExtra(NOTE_CONTENT);
+        final int index = intent.getIntExtra(NOTE_ID, -1);
+        note = ApplicationState
+                .getState()
+                .getNotepad()
+                .getNotes()
+                .get(index);
 
         setContentView(R.layout.activity_note);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(noteName);
+        getSupportActionBar().setTitle(note.getName());
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.container);
@@ -46,7 +50,11 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
     @Override
     public void onEditorContentChanged(String newContent) {
         sectionsPagerAdapter.noteViewer.updateContentView(newContent);
-        StorageOrchestrator.getInstance().saveNote(noteName, newContent);
+        note.setContent(newContent);
+        ApplicationState
+                .getState()
+                .getStorage()
+                .saveNote(note);
     }
 
     @Override
@@ -80,10 +88,10 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                noteViewer = NoteViewer.newInstance(initialNoteContent);
+                noteViewer = NoteViewer.newInstance(note.getContent());
                 return noteViewer;
             } else if (position == 1) {
-                noteEditor = NoteEditor.newInstance(initialNoteContent);
+                noteEditor = NoteEditor.newInstance(note.getContent());
                 return noteEditor;
             }
             return null;
