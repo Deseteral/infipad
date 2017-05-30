@@ -71,9 +71,10 @@ public class LocalStorage implements Storage {
         for (File f : appFolder.listFiles()) {
             final String filename = f.getName();
             final String extension = filename.substring(filename.length() - 3);
+
             if (extension.equals(".md")) {
                 final String name = filename.substring(0, filename.length() - 3);
-                final List<String> tags = new ArrayList<>();
+                final List<String> tags = readTagList(f);
 
                 final Note n = new Note(name, null, tags);
                 list.add(n);
@@ -93,7 +94,36 @@ public class LocalStorage implements Storage {
         return new File(appFolder, filename);
     }
 
-    public File getAppFolder() {
-        return appFolder;
+    private List<String> readTagList(File file) {
+        final String tagsLineStart = "tags: ";
+        String line;
+        String lastLine = "";
+        BufferedReader input;
+
+        try {
+            input = new BufferedReader(new FileReader(file));
+
+            while ((line = input.readLine()) != null) {
+                lastLine = line;
+            }
+
+            input.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (!lastLine.startsWith(tagsLineStart)) {
+            return new ArrayList<>();
+        }
+
+        String[] tags = lastLine
+                .substring(tagsLineStart.length())
+                .split(",");
+
+        for (int i = 0; i < tags.length; i++) {
+            tags[i] = tags[i].trim();
+        }
+
+        return Arrays.asList(tags);
     }
 }
