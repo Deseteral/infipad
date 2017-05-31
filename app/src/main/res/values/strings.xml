@@ -7,4 +7,6 @@
     <string name="new_note_dialog_title">New note</string>
     <string name="note_name">Note name</string>
     <string name="remove_note_dialog_title">Remove note</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="search">Search</string>
 </resources>
