@@ -23,7 +23,7 @@ import com.deseteral.infipad.service.ApplicationState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements OnItemClickListener {
 
     private ListView listView;
 
@@ -37,7 +37,7 @@ public class SearchActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listView = (ListView) findViewById(R.id.note_list);
-        listView.setOnItemClickListener(onItemClickListener);
+        listView.setOnItemClickListener(this);
 
         EditText searchBox = (EditText) findViewById(R.id.search_box);
         searchBox.addTextChangedListener(new TextWatcher() {
@@ -51,19 +51,17 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private OnItemClickListener onItemClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final TextView textView = (TextView) view;
-            final String noteName = textView.getText().toString();
-            final Note note = ApplicationState
-                    .getState()
-                    .getNotepad()
-                    .findNoteByName(noteName);
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final TextView textView = (TextView) view;
+        final String noteName = textView.getText().toString();
+        final Note note = ApplicationState
+                .getState()
+                .getNotepad()
+                .findNoteByName(noteName);
 
-            startNoteActivity(note);
-        }
-    };
+        startNoteActivity(note);
+    }
 
     private void startNoteActivity(Note note) {
         ApplicationState
