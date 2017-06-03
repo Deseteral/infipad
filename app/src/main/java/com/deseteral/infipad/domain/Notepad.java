@@ -34,12 +34,38 @@ public class Notepad {
                 .getList();
     }
 
-    public List<Note> searchForTag(String tag) {
+    public List<Note> search(String phrase) {
+        final List<Note> names = searchForName(phrase);
+        final List<Note> tags = searchForTag(phrase);
+
+        for (Note n : tags) {
+            if (!names.contains(n)) {
+                names.add(n);
+            }
+        }
+
+        return names;
+    }
+
+    private List<Note> searchForName(String phrase) {
         List<Note> found = new ArrayList<>();
 
         for (Note n : notes) {
-            for (String t : n.getTags()) {
-                if (t.equals(tag)) {
+            if (n.getName().toLowerCase().contains(phrase.toLowerCase())) {
+                found.add(n);
+                break;
+            }
+        }
+
+        return found;
+    }
+
+    private List<Note> searchForTag(String phrase) {
+        List<Note> found = new ArrayList<>();
+
+        for (Note n : notes) {
+            for (String noteTag : n.getTags()) {
+                if (noteTag.toLowerCase().contains(phrase.toLowerCase())) {
                     found.add(n);
                     break;
                 }

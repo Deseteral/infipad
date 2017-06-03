@@ -57,7 +57,7 @@ public class SearchActivity extends AppCompatActivity {
         final List<Note> noteList = ApplicationState
                 .getState()
                 .getNotepad()
-                .searchForTag(phrase);
+                .search(phrase);
 
         // map(Note -> name)
         final List<String> list = new ArrayList<>();
