@@ -90,8 +90,6 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
             case R.id.bar_pick_photo:
                 showPickPhotoDialog();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -194,8 +194,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.app_bar_search:
                 startSearchActivity();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

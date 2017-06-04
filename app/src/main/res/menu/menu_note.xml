@@ -9,9 +9,4 @@
         android:title="@string/pick_photo"
         android:icon="@drawable/ic_add_a_photo_black_24dp"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="101"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
 </menu>
