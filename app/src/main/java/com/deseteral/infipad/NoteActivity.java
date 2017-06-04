@@ -44,6 +44,8 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ApplicationState.createState(getApplicationContext());
+
         final Intent intent = getIntent();
         final int index = intent.getIntExtra(NOTE_ID, -1);
         note = ApplicationState

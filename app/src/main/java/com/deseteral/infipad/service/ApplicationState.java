@@ -21,6 +21,10 @@ public class ApplicationState {
         Log.i(TAG, "Constructor invoked");
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public Context getContext() {
         return context;
     }
@@ -38,8 +42,10 @@ public class ApplicationState {
      */
     private static ApplicationState state = null;
     public static void createState(Context context) {
-        state = new ApplicationState(context);
-        Log.i(TAG, "Created Application State");
+        if (state == null) {
+            state = new ApplicationState(context);
+            Log.i(TAG, "Created Application State");
+        }
     }
 
     public static ApplicationState getState() {
