@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">infipad</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Anuluj</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="title_activity_note">NoteActivity</string>
+    <string name="new_note_dialog_title">Nowa notatka</string>
+    <string name="note_name">Nazwa notatki</string>
+    <string name="remove_note_dialog_title">Usuń</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="search">Szukaj</string>
+    <string name="pick_photo">Wybierz zdjęcie</string>
+    <string name="insert_photo">Wstaw obraz</string>
+    <string-array name="photo_picker_dialog_items">
+        <item>Wybierz zdjęcie</item>
+        <item>Zrób zdjęcie</item>
+    </string-array>
+</resources>
