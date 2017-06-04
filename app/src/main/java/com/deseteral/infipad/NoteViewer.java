@@ -37,11 +37,11 @@ public class NoteViewer extends Fragment {
         View view = inflater.inflate(R.layout.fragment_note_viewer, container, false);
 
         markNoteContent = (MarkdownView) view.findViewById(R.id.mark_note_content);
-        markNoteContent.loadMarkdown(initialContent);
+        updateContentView(initialContent);
         return view;
     }
 
     public void updateContentView(String markdown) {
-        markNoteContent.loadMarkdown(markdown);
+        markNoteContent.loadMarkdown(markdown, "file:///android_asset/note_view.css");
     }
 }

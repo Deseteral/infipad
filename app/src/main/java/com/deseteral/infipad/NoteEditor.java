@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 public class NoteEditor extends Fragment {
+    EditText textNoteContent;
     private OnEditorContentChangedListener mListener;
     private String initialNoteContent = "";
 
@@ -22,6 +23,10 @@ public class NoteEditor extends Fragment {
         args.putString(NoteActivity.NOTE_CONTENT, noteContent);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void insertText(String text) {
+        textNoteContent.getText().insert(textNoteContent.getSelectionStart(), text);
     }
 
     @Override
@@ -38,7 +43,7 @@ public class NoteEditor extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
 
-        EditText textNoteContent = (EditText) view.findViewById(R.id.text_note_content);
+        textNoteContent = (EditText) view.findViewById(R.id.text_note_content);
         textNoteContent.setText(initialNoteContent);
         textNoteContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -47,11 +52,8 @@ public class NoteEditor extends Fragment {
                 mListener.onEditorContentChanged(newContent);
             }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(Editable s) { }
         });
 
         return view;
