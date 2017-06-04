@@ -2,10 +2,7 @@ package com.deseteral.infipad;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -13,146 +10,119 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.deseteral.infipad.storage.StorageOrchestrator;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.MetadataBuffer;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.query.Filters;
-import com.google.android.gms.drive.query.Query;
-import com.google.android.gms.drive.query.SearchableField;
+import com.deseteral.infipad.domain.Note;
+import com.deseteral.infipad.service.ApplicationState;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private GoogleApiClient googleApiClient;
-    private DriveFolder driveAppFolder;
+public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
-    private StorageOrchestrator storage;
-
     private static final String TAG = "MAIN_ACTIVITY";
-    private static final int RESOLVE_CONNECTION_REQUEST_CODE = 3;
-    private static final String DRIVE_APP_FOLDER_TITLE = "infipad app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        WebView.setWebContentsDebuggingEnabled(true);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-        storage = new StorageOrchestrator(this);
+        // set the initial state
+        ApplicationState.createState(getApplicationContext());
 
         listView = (ListView) findViewById(R.id.note_list);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final TextView textView = (TextView) view;
-                final String noteName = textView.getText().toString();
-                final String noteContent = storage.loadNoteContent(noteName);
-
-                startNoteActivity(noteName, noteContent);
-            }
-        });
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final TextView textView = (TextView) view;
-                final String noteName = textView.getText().toString();
-                final AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
-
-                builder.setTitle(R.string.remove_note_dialog_title)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int which) {
-                                storage.deleteNote(noteName);
-                                refreshListView();
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                builder.create().show();
-
-                return true;
-            }
-        });
+        listView.setOnItemClickListener(onItemNoteClick);
+        listView.setOnItemLongClickListener(onItemNoteLongClick);
         refreshListView();
     }
 
-    private void refreshListView() {
-        List<String> fileList = storage.getList();
-        listView.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, fileList));
-    }
+    private AdapterView.OnItemClickListener onItemNoteClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final TextView textView = (TextView) view;
+            final String noteName = textView.getText().toString();
+            final Note note = ApplicationState
+                    .getState()
+                    .getNotepad()
+                    .findNoteByName(noteName);
 
-    private void lookForApplicationFolder() {
-        Query query = new Query.Builder()
-                .addFilter(Filters.eq(SearchableField.TITLE, DRIVE_APP_FOLDER_TITLE))
-                .build();
+            startNoteActivity(note);
+        }
+    };
 
-        Drive.DriveApi
-                .getRootFolder(googleApiClient)
-                .queryChildren(googleApiClient, query)
-                .setResultCallback(new ResultCallback<DriveApi.MetadataBufferResult>() {
-                    @Override
-                    public void onResult(@NonNull DriveApi.MetadataBufferResult result) {
-                        MetadataBuffer bufferResult = result.getMetadataBuffer();
-                        boolean isFolderCreated = bufferResult.getCount() > 0;
+    private AdapterView.OnItemLongClickListener onItemNoteLongClick = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            final TextView textView = (TextView) view;
+            final String noteName = textView.getText().toString();
+            final Note noteReference = ApplicationState
+                    .getState()
+                    .getNotepad()
+                    .findNoteByName(noteName);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(parent.getContext());
 
-                        if (isFolderCreated) {
-                            driveAppFolder = result
-                                    .getMetadataBuffer()
-                                    .get(0)
-                                    .getDriveId()
-                                    .asDriveFolder();
-
-                            Log.i(TAG, "GDrive app folder found");
-                        } else {
-                            Log.i(TAG, "GDrive app folder not found. Creating...");
-
-                            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                                    .setTitle(DRIVE_APP_FOLDER_TITLE)
-                                    .build();
-
-                            Drive.DriveApi
-                                    .getRootFolder(googleApiClient)
-                                    .createFolder(googleApiClient, changeSet)
-                                    .setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
-                                        @Override
-                                        public void onResult(@NonNull DriveFolder.DriveFolderResult driveFolderResult) {
-                                            Log.i(TAG, "GDrive app folder created");
-                                            lookForApplicationFolder();
-                                        }
-                                    });
+            builder.setTitle(R.string.remove_note_dialog_title)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int which) {
+                            ApplicationState
+                                    .getState()
+                                    .getStorage()
+                                    .deleteNote(noteReference);
+                            refreshListView();
                         }
-                    }
-                });
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+            builder.create().show();
+
+            return true;
+        }
+    };
+
+    /**
+     * Refreshes the list of notes with current data
+     */
+    private void refreshListView() {
+        ApplicationState
+                .getState()
+                .getNotepad()
+                .refresh();
+
+        final List<Note> noteList = ApplicationState
+                .getState()
+                .getNotepad()
+                .getNotes();
+
+        // map(Note -> name)
+        final List<String> list = new ArrayList<>();
+        for (Note n : noteList) {
+            list.add(n.getName());
+        }
+
+        listView.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, list));
     }
 
+    /**
+     * Handles the click on add FAB
+     * @param view the FAB view
+     */
     public void onFabClick(View view) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -164,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         final EditText nameField = (EditText) dialog.findViewById(R.id.dialog_new_note_name_field);
                         final String name = nameField.getText().toString().trim();
 
-                        newFile(name);
+                        newNote(name);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -178,54 +148,54 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         builder.create().show();
     }
 
-    private void newFile(String noteName) {
+    /**
+     * Creates new note
+     * @param noteName the name of the note
+     */
+    private void newNote(String noteName) {
         Log.i(TAG, "Create new note with title: " + noteName);
 
-        final String initialNoteContent = "# This is a new note";
+        final Note note = new Note(noteName);
+        ApplicationState
+                .getState()
+                .getNotepad()
+                .getNotes()
+                .add(note);
 
-        storage.saveNote(noteName, initialNoteContent);
-        startNoteActivity(noteName, initialNoteContent);
+        startNoteActivity(note);
     }
 
-    private void startNoteActivity(String noteName, String noteContent) {
-        Intent intent = new Intent(this, NoteActivity.class);
-        intent.putExtra(NoteActivity.NOTE_NAME, noteName);
-        intent.putExtra(NoteActivity.NOTE_CONTENT, noteContent);
+    /**
+     * Starts note activity with specified note
+     * @param note note to edit
+     */
+    private void startNoteActivity(Note note) {
+        ApplicationState
+                .getState()
+                .getStorage()
+                .loadNoteContent(note);
 
+        final Intent intent = new Intent(this, NoteActivity.class);
+        final int index = ApplicationState
+                .getState()
+                .getNotepad()
+                .findIndexByName(note.getName());
+        intent.putExtra(NoteActivity.NOTE_ID, index);
+
+        startActivity(intent);
+    }
+
+    /**
+     * Starts search activity
+     */
+    private void startSearchActivity() {
+        final Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        googleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                connectionResult.startResolutionForResult(this, RESOLVE_CONNECTION_REQUEST_CODE);
-            } catch (IntentSender.SendIntentException e) {
-                // Unable to resolve, message user appropriately
-            }
-        } else {
-            GoogleApiAvailability
-                    .getInstance()
-                    .getErrorDialog(this, connectionResult.getErrorCode(), 0)
-                    .show();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        switch (requestCode) {
-            case RESOLVE_CONNECTION_REQUEST_CODE:
-                if (resultCode == RESULT_OK) {
-                    googleApiClient.connect();
-                }
-                break;
-        }
     }
 
     @Override
@@ -238,23 +208,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.app_bar_search:
+                startSearchActivity();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-     * Google API connection callbacks
-     */
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.i(TAG, "Connected to Google API services");
-        lookForApplicationFolder();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) { }
 }

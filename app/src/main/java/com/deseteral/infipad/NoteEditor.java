@@ -11,19 +11,31 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 public class NoteEditor extends Fragment {
+    EditText textNoteContent;
     private OnEditorContentChangedListener mListener;
     private String initialNoteContent = "";
 
     private static final String TAG = "NOTE_EDITOR_FRAGMENT";
 
-    public NoteEditor() { }
-
+    /**
+     * Creates new instance of the note editor fragment
+     * @param noteContent the content of the note
+     * @return note editor fragment
+     */
     public static NoteEditor newInstance(String noteContent) {
         NoteEditor fragment = new NoteEditor();
         Bundle args = new Bundle();
         args.putString(NoteActivity.NOTE_CONTENT, noteContent);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    /**
+     * Inserts text at current cursor position
+     * @param text text to insert
+     */
+    public void insertText(String text) {
+        textNoteContent.getText().insert(textNoteContent.getSelectionStart(), text);
     }
 
     @Override
@@ -40,7 +52,7 @@ public class NoteEditor extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_note_editor, container, false);
 
-        EditText textNoteContent = (EditText) view.findViewById(R.id.text_note_content);
+        textNoteContent = (EditText) view.findViewById(R.id.text_note_content);
         textNoteContent.setText(initialNoteContent);
         textNoteContent.addTextChangedListener(new TextWatcher() {
             @Override
@@ -49,11 +61,8 @@ public class NoteEditor extends Fragment {
                 mListener.onEditorContentChanged(newContent);
             }
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void afterTextChanged(Editable s) { }
         });
 
         return view;
@@ -76,7 +85,15 @@ public class NoteEditor extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Callback for editor content changed event
+     */
     interface OnEditorContentChangedListener {
+
+        /**
+         * Callback for editor content changed event
+         * @param newContent the new content of the editor
+         */
         void onEditorContentChanged(String newContent);
     }
 }

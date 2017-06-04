@@ -7,4 +7,12 @@
     <string name="new_note_dialog_title">New note</string>
     <string name="note_name">Note name</string>
     <string name="remove_note_dialog_title">Remove note</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="search">Search</string>
+    <string name="pick_photo">Pick photo</string>
+    <string name="insert_photo">Insert photo</string>
+    <string-array name="photo_picker_dialog_items">
+        <item>Select from storage</item>
+        <item>Take a photo</item>
+    </string-array>
 </resources>
