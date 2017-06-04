@@ -66,6 +66,10 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
         startNoteActivity(note);
     }
 
+    /**
+     * Starts note activity with specified note
+     * @param note the note to load
+     */
     private void startNoteActivity(Note note) {
         ApplicationState
                 .getState()
@@ -82,6 +86,10 @@ public class SearchActivity extends AppCompatActivity implements OnItemClickList
         startActivity(intent);
     }
 
+    /**
+     * Refreshes the list view for specified search phrase
+     * @param phrase the phrase to look for
+     */
     private void refreshListView(String phrase) {
         ApplicationState
                 .getState()

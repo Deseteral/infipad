@@ -14,6 +14,11 @@ public class NoteViewer extends Fragment {
 
     private static final String TAG = "NOTE_VIEWER_FRAGMENT";
 
+    /**
+     * Creates new instance of the note viewer fragment
+     * @param noteContent the content of the note
+     * @return note viewer fragment
+     */
     public static NoteViewer newInstance(String noteContent) {
         NoteViewer fragment = new NoteViewer();
         Bundle args = new Bundle();
@@ -41,6 +46,10 @@ public class NoteViewer extends Fragment {
         return view;
     }
 
+    /**
+     * Update the view with new markdown
+     * @param markdown markdown content to load
+     */
     public void updateContentView(String markdown) {
         markNoteContent.loadMarkdown(markdown, "file:///android_asset/note_view.css");
     }

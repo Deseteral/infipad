@@ -95,6 +95,9 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Show dialog for inserting image
+     */
     private void showPickPhotoDialog() {
         final Context context = getApplicationContext();
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -164,6 +167,11 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         }
     }
 
+    /**
+     * Creates empty image file
+     * @return file handle
+     * @throws IOException
+     */
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -178,6 +186,9 @@ public class NoteActivity extends AppCompatActivity implements NoteEditor.OnEdit
         return image;
     }
 
+    /**
+     * Section pager for note editor and viewer
+     */
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         NoteViewer noteViewer;

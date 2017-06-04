@@ -17,6 +17,11 @@ public class NoteEditor extends Fragment {
 
     private static final String TAG = "NOTE_EDITOR_FRAGMENT";
 
+    /**
+     * Creates new instance of the note editor fragment
+     * @param noteContent the content of the note
+     * @return note editor fragment
+     */
     public static NoteEditor newInstance(String noteContent) {
         NoteEditor fragment = new NoteEditor();
         Bundle args = new Bundle();
@@ -25,6 +30,10 @@ public class NoteEditor extends Fragment {
         return fragment;
     }
 
+    /**
+     * Inserts text at current cursor position
+     * @param text text to insert
+     */
     public void insertText(String text) {
         textNoteContent.getText().insert(textNoteContent.getSelectionStart(), text);
     }
@@ -76,7 +85,15 @@ public class NoteEditor extends Fragment {
         mListener = null;
     }
 
+    /**
+     * Callback for editor content changed event
+     */
     interface OnEditorContentChangedListener {
+
+        /**
+         * Callback for editor content changed event
+         * @param newContent the new content of the editor
+         */
         void onEditorContentChanged(String newContent);
     }
 }

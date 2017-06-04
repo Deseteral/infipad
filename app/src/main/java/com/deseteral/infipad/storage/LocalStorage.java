@@ -17,11 +17,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LocalStorage implements Storage {
+    /**
+     * Root folder for the app
+     */
     private final File appFolder;
+
+    /**
+     * Application context reference
+     */
     private final Context context;
 
     private final String TAG = "LOCAL_STORAGE";
 
+    /**
+     * Creates new local storage mounting point
+     * @param context
+     */
     public LocalStorage(Context context) {
         this.context = context;
         this.appFolder = context.getFilesDir();
@@ -89,11 +100,21 @@ public class LocalStorage implements Storage {
         getFileForName(note.getName()).delete();
     }
 
+    /**
+     * Returns file handle for note file with specified name
+     * @param name the name of the note
+     * @return file handle
+     */
     private File getFileForName(String name) {
         final String filename = String.format("%s.md", name);
         return new File(appFolder, filename);
     }
 
+    /**
+     * Reads the tag list for the note
+     * @param file file handle for the note
+     * @return list of tags
+     */
     private List<String> readTagList(File file) {
         final String tagsLineStart = "tags: ";
         String line;

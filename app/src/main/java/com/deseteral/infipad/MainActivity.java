@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Refreshes the list of notes with current data
+     */
     private void refreshListView() {
         ApplicationState
                 .getState()
@@ -116,6 +119,10 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(new ArrayAdapter<>(this, R.layout.element_note, list));
     }
 
+    /**
+     * Handles the click on add FAB
+     * @param view the FAB view
+     */
     public void onFabClick(View view) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -141,6 +148,10 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    /**
+     * Creates new note
+     * @param noteName the name of the note
+     */
     private void newNote(String noteName) {
         Log.i(TAG, "Create new note with title: " + noteName);
 
@@ -154,6 +165,10 @@ public class MainActivity extends AppCompatActivity {
         startNoteActivity(note);
     }
 
+    /**
+     * Starts note activity with specified note
+     * @param note note to edit
+     */
     private void startNoteActivity(Note note) {
         ApplicationState
                 .getState()
@@ -170,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Starts search activity
+     */
     private void startSearchActivity() {
         final Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);

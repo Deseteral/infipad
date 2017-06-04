@@ -7,8 +7,19 @@ import com.deseteral.infipad.domain.Notepad;
 import com.deseteral.infipad.storage.LocalStorage;
 
 public class ApplicationState {
+    /**
+     * Application context
+     */
     private Context context;
+
+    /**
+     * Application local storage
+     */
     private LocalStorage storage;
+
+    /**
+     * The root notepad
+     */
     private Notepad notepad;
 
     private static final String TAG = "APP_STATE";
@@ -37,8 +48,8 @@ public class ApplicationState {
         return notepad;
     }
 
-    /*
-     * singleton
+    /**
+     * Application state singleton
      */
     private static ApplicationState state = null;
     public static void createState(Context context) {

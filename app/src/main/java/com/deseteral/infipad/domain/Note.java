@@ -4,10 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Note {
+    /**
+     * The name of the note
+     */
     private String name;
+
+    /**
+     * The content of the note
+     */
     private String content;
+
+    /**
+     * Note's tags
+     */
     private List<String> tags;
 
+    /**
+     * Creates new note
+     * @param name the name of the note
+     * @param content the content of the note
+     * @param tags list of lags for the note
+     */
     public Note(
             String name,
             String content,
@@ -18,6 +35,10 @@ public class Note {
         this.tags = tags;
     }
 
+    /**
+     * Creates empty note
+     * @param name the name of the note
+     */
     public Note(String name) {
         this(name, "", new ArrayList<String>());
     }
